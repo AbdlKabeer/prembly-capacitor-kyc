@@ -1,2 +1,50 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Normal permission (no prompt): lets the library see whether a VPN or proxy is active. -->
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+  <!--
+    Normal permission (no prompt), Android 15 and later: lets the library ask the system whether the
+    screen is being recorded while a verification is open. Without it the library falls back to
+    looking for a cast or mirrored display.
+  -->
+  <uses-permission android:name="android.permission.DETECT_SCREEN_RECORDING" />
+
+  <!--
+    Asked for only when a verification step needs the camera or microphone (a selfie, a liveness
+    check), through the usual Android prompt. The library never asks for them on its own.
+  -->
+  <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  <uses-feature android:name="android.hardware.camera" android:required="false" />
+  <uses-feature android:name="android.hardware.microphone" android:required="false" />
+
+  <!--
+    Package visibility (Android 11+) for the packages the library checks by name. This lists specific
+    packages only; the library does not use QUERY_ALL_PACKAGES. The list is reviewed by the security
+    team before release: see RemoteAccessApps.kt and the README.
+  -->
+  <queries>
+    <package android:name="com.topjohnwu.magisk" />
+    <package android:name="eu.chainfire.supersu" />
+    <package android:name="com.koushikdutta.superuser" />
+    <package android:name="com.noshufou.android.su" />
+    <package android:name="me.weishu.kernelsu" />
+    <package android:name="com.anydesk.anydeskandroid" />
+    <package android:name="com.anydesk.adcontrol.ad1" />
+    <package android:name="com.teamviewer.teamviewer.market.mobile" />
+    <package android:name="com.teamviewer.quicksupport.market" />
+    <package android:name="com.teamviewer.host.market" />
+    <package android:name="com.carriez.flutter_hbb" />
+    <package android:name="com.sand.airdroid" />
+    <package android:name="com.sand.airmirror" />
+  </queries>
+
+  <application>
+    <activity
+      android:name="com.prembly.capacitor.PremblyWebActivity"
+      android:exported="false"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+      android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|keyboard|uiMode|density"
+      android:windowSoftInputMode="adjustResize" />
+  </application>
 </manifest>

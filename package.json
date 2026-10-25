@@ -1,6 +1,6 @@
 {
   "name": "prembly-capacitor-kyc",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Prembly Capacitor plugin for Ionic apps: the Identity KYC widget, workflows and Transaction Monitoring device signals, with a real device ID read from the phone",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -11,7 +11,6 @@
     "android/build.gradle",
     "dist/",
     "ios/Sources",
-    "ios/Tests",
     "Package.swift",
     "PremblyCapacitorKyc.podspec"
   ],
@@ -43,7 +42,8 @@
     "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.mjs",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "jest"
   },
   "devDependencies": {
     "@capacitor/android": "^8.0.0",
@@ -59,7 +59,10 @@
     "rimraf": "^6.1.0",
     "rollup": "^4.53.2",
     "swiftlint": "^2.0.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "@types/jest": "^29.5.14"
   },
   "peerDependencies": {
     "@capacitor/core": ">=8.0.0"
@@ -75,6 +78,31 @@
     },
     "android": {
       "src": "android"
+    }
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/src/__tests__/**/*.test.ts"
+    ],
+    "transform": {
+      "^.+\\.ts$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "module": "commonjs",
+            "esModuleInterop": true,
+            "target": "es2020",
+            "lib": [
+              "es2020",
+              "dom"
+            ],
+            "strict": true,
+            "skipLibCheck": true
+          }
+        }
+      ]
     }
   }
 }

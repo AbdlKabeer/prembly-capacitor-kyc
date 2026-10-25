@@ -19,10 +19,6 @@ let package = Package(
                 .product(name: "Capacitor", package: "capacitor-swift-pm"),
                 .product(name: "Cordova", package: "capacitor-swift-pm")
             ],
-            path: "ios/Sources/PremblyDevicePlugin"),
-        .testTarget(
-            name: "PremblyDevicePluginTests",
-            dependencies: ["PremblyDevicePlugin"],
-            path: "ios/Tests/PremblyDevicePluginTests")
+            path: "ios/Sources/PremblyDevicePlugin")
     ]
 )
