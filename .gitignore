@@ -69,3 +69,6 @@ captures
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 example-app/src/js/local-config.js
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
