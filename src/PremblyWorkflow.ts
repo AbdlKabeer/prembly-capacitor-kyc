@@ -101,6 +101,14 @@ async function start(options: WorkflowStartOptions): Promise<WorkflowHandle> {
         const event = parseWorkflowMessage(raw);
         // Only this session's events count; a message about another session is ignored.
         if (!event || !session || event.sessionId !== session.sessionId) return;
+        // The person cancelled from the widget's own Cancel button: close the screen, which reports
+        // `cancelled` through `onClosed` below. This comes first so `lastEvent` is still what
+        // came before the cancel.
+        if (event.type === 'cancelled') {
+          options.onEvent?.(event);
+          void screen?.close();
+          return;
+        }
         lastEvent = event.type;
         options.onEvent?.(event);
         if (isEndState(event.type)) {
