@@ -5,6 +5,7 @@ import type {
   WorkflowCustomer,
   WorkflowErrorCode,
   WorkflowEvent,
+  WorkflowPrefill,
   WorkflowResult,
   WorkflowSessionInfo,
 } from './types';
@@ -17,6 +18,13 @@ export interface WorkflowStartOptions {
   workflowId: string;
   customer: WorkflowCustomer;
   metadata?: Record<string, unknown>;
+  /**
+   * An ID you already have for the person (`{ bvn: '...' }`, or `nin`, `passport`, `driversLicense`,
+   * `votersCard`; exactly one): they skip the ID screen. It travels in the session's `metadata`, so
+   * whoever can read what the app sends could change it; for an ID that must not be changeable,
+   * create the session from your server with a secret key.
+   */
+  prefill?: WorkflowPrefill;
   redirectUrl?: string;
   /** Override the API base URL (for example for a staging server). */
   baseUrl?: string;
@@ -85,6 +93,7 @@ async function start(options: WorkflowStartOptions): Promise<WorkflowHandle> {
       workflowId: options.workflowId,
       customer: options.customer,
       metadata: options.metadata,
+      prefill: options.prefill,
       redirectUrl: options.redirectUrl,
       baseUrl: options.baseUrl,
     });

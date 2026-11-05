@@ -46,11 +46,26 @@ const handle = await PremblyWorkflow.start({
   publishableKey: 'test_pk_...',
   workflowId: 'wf_...',
   customer: { firstName: 'Ada', lastName: 'Obi', email: 'ada@example.com' },
+  // Optional: an ID you already have, so they skip the ID screen
+  prefill: { bvn: '22212345678' },
   onEvent: (event) => console.log(event.type),
   callback: (result) => console.log(result.status), // completed | rejected | ... | cancelled | failed
 });
 // handle.close() dismisses the screen.
 ```
+
+#### Prefill an ID
+
+If you already know the person's ID, pass it and they skip the ID screen and go straight to their next step (for example the selfie):
+
+```ts
+prefill: { nin: '12345678901' },
+```
+
+- Give exactly one of `nin`, `bvn`, `passport`, `driversLicense`, `votersCard`. Anything else fails before a request is made, with `invalid_request`.
+- The workflow's identity step must offer that ID type. If it does not, the ID is ignored and the person is asked for it as usual.
+- It travels in the session's `metadata` (`{ prefill: true, channel_code: 'bvn', bvn: '...' }`), which is what a public key can send. **Anyone who can read what your app sends could change it.** When the ID must not be changeable, create the session from your server with a secret key and the `prefill` field instead, and open the link it returns.
+- The ID is stored encrypted by Prembly and is not kept in the session's metadata. The library never logs it.
 
 ### Identity KYC widget
 
@@ -313,6 +328,8 @@ The signals the native side collects, grouped the way the API expects.
 
 Construct a type with a set of properties K of type T
 
-<code>{ [P in K]: T; }</code>
+<code>{
+ [P in K]: T;
+ }</code>
 
 </docgen-api>
