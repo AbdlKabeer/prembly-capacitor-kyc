@@ -51,6 +51,9 @@ export interface PremblyDevicePlugin {
    * The signal sections: `device`, `integrity`, `network`, `scam_signals` and, only when
    * `includeLocation` is true and the app already holds the location permission, `location`. The
    * library never asks for a permission itself.
+   *
+   * `integrity` includes `hooking_framework_detected` (Frida, Xposed, LSPosed, Substrate). It is
+   * best effort: `true` is strong evidence, `false` is not proof.
    */
   collectSignals(options: { includeLocation: boolean }): Promise<{ signals: SignalBundle }>;
 
