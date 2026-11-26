@@ -1,6 +1,6 @@
 {
   "name": "prembly-capacitor-kyc",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Prembly Capacitor plugin for Ionic apps: the Identity KYC widget, workflows and Transaction Monitoring device signals, with a real device ID read from the phone",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
