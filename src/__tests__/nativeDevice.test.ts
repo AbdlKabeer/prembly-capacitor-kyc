@@ -29,7 +29,11 @@ const ANDROID_SIGNALS = {
     platform_device_id: '9774d56d682e549c',
     total_memory_mb: 7800,
   },
-  integrity: { is_rooted: false, is_emulator: false },
+  integrity: {
+    is_rooted: false,
+    is_emulator: false,
+    hooking_framework_detected: false,
+  },
   network: { type: 'wifi', is_vpn_active: false },
   scam_signals: { is_screen_shared_or_recorded: false },
 };
