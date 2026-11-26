@@ -16,5 +16,6 @@ export type {
   WorkflowEnd,
   WorkflowErrorCode,
   WorkflowEvent,
+  WorkflowPrefill,
   WorkflowResult,
 } from './types';
