@@ -120,9 +120,11 @@ describe('request contract', () => {
         'X-Publishable-Key',
         'X-SDK-Platform',
         'X-SDK-Version',
+        'X-Payload-Digest',
       ].sort()
     );
     expect(init.headers['X-SDK-Version']).toBe(SDK_VERSION);
+    expect(init.headers['X-Payload-Digest']).toMatch(/^[0-9a-f]{64}$/);
     expect(init.headers['X-Publishable-Key']).toBe('live_pk_abc');
     expect(init.headers['X-App-Id']).toBe('com.merchant.app');
   });
@@ -166,13 +168,9 @@ describe('request contract', () => {
 });
 
 describe('native signal keys', () => {
-  const kotlin = readFileSync(
-    join(
-      ROOT,
-      'android/src/main/kotlin/com/prembly/capacitor/SignalCollector.kt'
-    ),
-    'utf8'
-  );
+  const kotlin = ['SignalCollector.kt', 'ExtendedSignals.kt']
+    .map((file) => readFileSync(join(ROOT, 'android/src/main/kotlin/com/prembly/capacitor', file), 'utf8'))
+    .join('\n');
   const swift = readFileSync(join(ROOT, 'ios/Sources/PremblyDevicePlugin/SignalCollector.swift'), 'utf8');
 
   const keysIn = (source: string, pattern: RegExp) =>
@@ -186,7 +184,7 @@ describe('native signal keys', () => {
 
   it('Android sends exactly the contract keys', () => {
     // .put("key", ...) calls; camelCase keys (appId, appVersion) belong to getAppInfo, not signals.
-    const found = keysIn(kotlin, /\.put\("([a-z_]+)"/g);
+    const found = keysIn(kotlin, /(?:\.put\(|\bput\(out, )"([a-z0-9_]+)"/g);
     expect([...found].sort()).toEqual([...expected('android')].sort());
   });
 
