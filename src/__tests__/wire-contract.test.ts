@@ -120,9 +120,11 @@ describe('request contract', () => {
         'X-Publishable-Key',
         'X-SDK-Platform',
         'X-SDK-Version',
+        'X-Payload-Digest',
       ].sort()
     );
     expect(init.headers['X-SDK-Version']).toBe(SDK_VERSION);
+    expect(init.headers['X-Payload-Digest']).toMatch(/^[0-9a-f]{64}$/);
     expect(init.headers['X-Publishable-Key']).toBe('live_pk_abc');
     expect(init.headers['X-App-Id']).toBe('com.merchant.app');
   });
@@ -166,14 +168,12 @@ describe('request contract', () => {
 });
 
 describe('native signal keys', () => {
-  const kotlin = readFileSync(
-    join(
-      ROOT,
-      'android/src/main/kotlin/com/prembly/capacitor/SignalCollector.kt'
-    ),
-    'utf8'
-  );
-  const swift = readFileSync(join(ROOT, 'ios/Sources/PremblyDevicePlugin/SignalCollector.swift'), 'utf8');
+  const kotlin = ['SignalCollector.kt', 'ExtendedSignals.kt']
+    .map((file) => readFileSync(join(ROOT, 'android/src/main/kotlin/com/prembly/capacitor', file), 'utf8'))
+    .join('\n');
+  const swift = ['SignalCollector.swift', 'ExtendedSignals.swift']
+    .map((file) => readFileSync(join(ROOT, 'ios/Sources/PremblyDevicePlugin', file), 'utf8'))
+    .join('\n');
 
   const keysIn = (source: string, pattern: RegExp) =>
     new Set([...source.matchAll(pattern)].map((match) => match[1]));
@@ -186,15 +186,16 @@ describe('native signal keys', () => {
 
   it('Android sends exactly the contract keys', () => {
     // .put("key", ...) calls; camelCase keys (appId, appVersion) belong to getAppInfo, not signals.
-    const found = keysIn(kotlin, /\.put\("([a-z_]+)"/g);
+    const found = keysIn(kotlin, /(?:\.put\(|\bput\(out, )"([a-z0-9_]+)"/g);
     expect([...found].sort()).toEqual([...expected('android')].sort());
   });
 
   it('iOS sends exactly the contract keys', () => {
     // Dictionary keys at the start of a line ("key": value) and signals["section"] assignments.
     const found = new Set([
-      ...keysIn(swift, /^\s*"([a-z_]+)"\s*:/gm),
+      ...keysIn(swift, /^\s*"([a-z0-9_]+)"\s*:/gm),
       ...keysIn(swift, /signals\["([a-z_]+)"\]/g),
+      ...keysIn(swift, /\bout\["([a-z0-9_]+)"\]\s*=/g),
     ]);
     expect([...found].sort()).toEqual([...expected('ios')].sort());
   });
