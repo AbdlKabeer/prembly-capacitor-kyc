@@ -82,6 +82,7 @@ enum SignalCollector {
             "cpu_cores": info.activeProcessorCount
         ]
         for (key, value) in screenMetrics() { section[key] = value }
+        for (key, value) in ExtendedSignals.deviceContext() { section[key] = value }
         return section
     }
 
@@ -263,7 +264,8 @@ enum SignalCollector {
         [
             "is_screen_shared_or_recorded": isScreenCaptured(),
             // iOS does not let an app see which other apps are running.
-            "remote_access_app_running": false
+            "remote_access_app_running": false,
+            "on_phone_call": ExtendedSignals.onPhoneCall()
         ]
     }
 
